@@ -39,7 +39,7 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Texts(bool check_entry_use)
     m_CreatureEventAI_TextMap.clear();
 
     // Load EventAI Text
-    sObjectMgr.LoadMangosStrings(WorldDatabase, "creature_ai_texts", MIN_CREATURE_AI_TEXT_STRING_ID, MAX_CREATURE_AI_TEXT_STRING_ID);
+    sObjectMgr.LoadMangosStrings(WorldDatabase, "creature_ai_texts", MIN_CREATURE_AI_TEXT_STRING_ID, MAX_CREATURE_AI_TEXT_STRING_ID, false);
 
     // Gather Additional data from EventAI Texts
     QueryResult *result = WorldDatabase.Query("SELECT entry, sound, type, language, emote FROM creature_ai_texts");
@@ -603,7 +603,11 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Scripts()
                     {
                         const SpellEntry *spell = sSpellMgr.GetSpellEntry(action.cast.spellId);
                         if (!spell)
+                        {
                             sLog.outErrorDb("CreatureEventAI:  Event %u Action %u uses nonexistent SpellID %u.", i, j + 1, action.cast.spellId);
+                            continue;
+                        }
+
                         else if (spell->SpellFamilyName == SPELLFAMILY_GENERIC)
                         {
                             // Don't modify player spells, or spells that have category cooldown already (stealth for example)

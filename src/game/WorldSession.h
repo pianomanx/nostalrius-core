@@ -367,7 +367,7 @@ class MANGOS_DLL_SPEC WorldSession
         void SendUpdateTrade(bool trader_state = true);
         void SendCancelTrade();
 
-        void SendPetitionQueryOpcode(ObjectGuid petitionguid);
+        void SendPetitionQueryOpcode(uint32 petitionguid);
 
         //pet
         void SendPetNameQuery(ObjectGuid guid, uint32 petnumber);
@@ -664,6 +664,7 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleRaidReadyCheckFinishedOpcode( WorldPacket & recv_data );
         void HandleGroupRaidConvertOpcode( WorldPacket & recv_data );
         void HandleGroupChangeSubGroupOpcode( WorldPacket & recv_data );
+        void HandleGroupSwapSubGroupOpcode( WorldPacket & recv_data );
         void HandleGroupAssistantLeaderOpcode( WorldPacket & recv_data );
         void HandlePartyAssignmentOpcode( WorldPacket & recv_data );
 

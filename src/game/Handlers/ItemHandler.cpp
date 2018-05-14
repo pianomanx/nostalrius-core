@@ -1013,8 +1013,9 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket& recvPacket)
         }
 
         _player->RemoveItem(srcbag, srcslot, true);
-        if (Item const* storedItem = _player->StoreItem(dest, pItem, true))
-            _player->ItemAddedQuestCheck(storedItem->GetEntry(), storedItem->GetCount());
+        Item const* storedItem = _player->StoreItem(dest, pItem, true);
+        if (storedItem)
+            _player->ItemAddedQuestCheck(storedItem->GetEntry(), 0);
     }
     else                                                    // moving from inventory to bank
     {
@@ -1187,6 +1188,14 @@ void WorldSession::HandleWrapItemOpcode(WorldPacket& recv_data)
     if (item->GetProto()->MaxCount > 0)
     {
         _player->SendEquipError(EQUIP_ERR_UNIQUE_CANT_BE_WRAPPED, item, NULL);
+        return;
+    }
+
+    // don't allow wrapping while casting - fixes an exploit where you could use
+    // items multiple times by wrapping them during use
+    if (_player->IsNonMeleeSpellCasted(true, false, false))
+    {
+        _player->SendEquipError(EQUIP_ERR_CANT_DO_RIGHT_NOW, item, NULL);
         return;
     }
 
